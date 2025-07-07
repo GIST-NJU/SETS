@@ -78,7 +78,7 @@ We provide all the pretrained DNN models in the `Pretrained_model` folder. You c
 
 #### DeepGD
 
-The official replication package is available at [DeepGD](https://github.com/ZOE-CA/DeepGD/tree/main)
+The official replication package is available at [DeepGD](https://github.com/ZOE-CA/DeepGD/tree/main).
 Since the DeepGD approach in its original replication package is implemented in Jupyter Notebook (`.ipynb`), we have encapsulated it into a function-based interface for easier experiment reproduction. The `Source_code/DeepGD.py` file provides the implementation of the DeepGD approach.
 Run the following function to perform test selection for a given test selection problem:
 
