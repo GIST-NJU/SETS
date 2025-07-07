@@ -47,7 +47,7 @@ data_model_pairs = [
     ("TinyImageNet", "ResNet101")
 ]
 
-data_path = '/Users/miya_wang/Desktop/supplement_data/Input_data/Fault_clusters' #you have to change the path
+data_path = 'Input_data/Fault_clusters' #you have to change the path
 
 
 for data_name, model_name in data_model_pairs:
@@ -80,7 +80,7 @@ for data_name, model_name in data_model_pairs:
 
     gini_scores = gini_score(output_probability)
 
-    for size in [100]:
+    for size in [100,300,500]:
         print(size)
         selected_subset, exe_time = deepgd(size,index_withoutnoisy,gini_scores,features_test)
         _, find_faults, _ = faults(selected_subset, mis_ids_test, Clustering_labels)
