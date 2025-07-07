@@ -1,0 +1,27 @@
+Original Model Accuracy: 0.8424
+DeepGD Retraining
+Acc Re List:
+0.9288
+0.9296
+0.9298
+0.9294
+0.9288
+Acc Imp List:
+0.0864
+0.0872
+0.0874
+0.0870
+0.0864
+SETS Retraining
+Acc Re List:
+0.9298
+0.9292
+0.9298
+0.9294
+0.9298
+Acc Imp List:
+0.0874
+0.0868
+0.0874
+0.0870
+0.0874
