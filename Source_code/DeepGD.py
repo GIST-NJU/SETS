@@ -189,14 +189,14 @@ class MyDuplicateElimination(ElementwiseDuplicateElimination):
         return np.array_equal(a.X, b.X)
 
 
-def deepgd(size,index_withoutnoisy,gini_scores,features_test):
-    problem = MyProblem(n_var=size,Gini_scores=gini_scores,features_test=features_test)
+def deepgd(size,index,gini_scores,features):
+    problem = MyProblem(n_var=size,Gini_scores=gini_scores,features_test=features)
 
     algorithm = NSGA2(pop_size=p_size,
                     n_offsprings=n_off,
-                    sampling=MySampling(index_withoutnoisy),
-                    crossover=MyCrossover(gini_scores,index_withoutnoisy),
-                    mutation=MyMutation(gini_scores,features_test,index_withoutnoisy),
+                    sampling=MySampling(index),
+                    crossover=MyCrossover(gini_scores,index),
+                    mutation=MyMutation(gini_scores,features,index),
                     eliminate_duplicates=MyDuplicateElimination())
 
     start_time = time.time()
