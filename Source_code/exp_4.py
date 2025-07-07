@@ -3,13 +3,15 @@ import numpy as np
 import copy
 from SETS import GD,STD,gini_score,maxp_score,sets
 import pickle
+from DeepGD import deepgd
+
 
 #This file demonstrates how to perform test selection on the predefined test sets.
 # Please save the selected subsets and
 # then pass it into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining.
 
 
-# This function is reused from the official replication package of DeepGD:
+# This function is adapted from the implementation in:
 # https://github.com/ZOE-CA/DeepGD
 def faults(sample,mis_ind_test,Clustering_labels):
   i=0
@@ -86,8 +88,12 @@ for data_name, model_name in data_model_pairs:
     index_withoutnoisy = set(sett) - set(noisy_index)
     intersection = list(set(loaded_indices) & set(index_withoutnoisy))
 
+    gini_scores = gini_score(output_probability)
+
     size = 500
     selected_subset, exe_time = sets(size, intersection, features_test, output_probability, "maxp", "gd",a=3)
+
+    selected_subset, exe_time = deepgd(size, index_withoutnoisy, gini_scores, features_test)
 
 
 
