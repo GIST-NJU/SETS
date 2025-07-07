@@ -1,11 +1,13 @@
-# the clustering algorithm comes from the official implementation provided by the authors of DeepGD.
-# This file lists the core components of the algorithm from the official reproduction package.
-# The source code is publicly available on GitHub: GitHub Code: https://github.com/zohreh-aaa/DNN-Testing (Conf and validation.ipynb)
-# The corresponding paper can be accessed here: https://ieeexplore.ieee.org/ielx7/32/10124809/10041782.pdf?tp=&arnumber=10041782&isnumber=10124809&ref=aHR0cHM6Ly9zY2hvbGFyLmdvb2dsZS5jYS8=
-# We also provide the same Jupyter notebook file, which you can run step by step to obtain the desired clustering labels.
+# the clustering algorithm is reused from the official implementation provided by the authors of DeepGD:
+# https://github.com/zohreh-aaa/DNN-Testing (Conf and validation.ipynb)
+# The corresponding paper can be accessed here:
+# https://ieeexplore.ieee.org/ielx7/32/10124809/10041782.pdf?tp=&arnumber=10041782&isnumber=10124809&ref=aHR0cHM6Ly9zY2hvbGFyLmdvb2dsZS5jYS8=
+
+
+# This file provides an example of clustering for the Fruit-360 dataset.
 # Considering that the DBSCAN algorithm involves randomness and may produce slightly different results even when running the same code,
 # we provide the clustering results used in our experiments for all subjects.
-# These results can be found in the Experimental_data directory.
+# These results can be found in the Input_data directory.
 
 
 import time
@@ -53,13 +55,13 @@ def resize_and_normalize(images, target_size=(48, 48)):
 
 
 # Load dataset
-train_dir = ''
-test_dir = ''
+train_dir = 'fruits-360_dataset_100x100/fruits-360/Training'
+test_dir = 'fruits-360_dataset_100x100/fruits-360/Test'
 
 CLIP_MIN = -0.5
 CLIP_MAX = 0.5
 
-model = load_model('')
+model = load_model('fruit_resnet2.h5')
 
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(train_dir, image_size=(100, 100), batch_size=32,

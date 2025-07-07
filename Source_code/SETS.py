@@ -17,7 +17,7 @@ import numpy as np
 
 
 
-# This function is adapted from the implementation in:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def GD(IDs, features):
     selected_features = features[list(IDs)]
@@ -25,7 +25,7 @@ def GD(IDs, features):
     sign, Log_det = np.linalg.slogdet(dot_p)
     return Log_det
 
-# This function is adapted from the implementation in:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def STD(IDs, features):
   x_sample = features[list(IDs)]
@@ -35,7 +35,7 @@ def STD(IDs, features):
   end_time = time.perf_counter()
   return L1norm
 
-# This function is adapted from the implementation in:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def gini_score(Output_probability):
   gini_scores=[]

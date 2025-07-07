@@ -1,7 +1,7 @@
 import random
 
 
-# This function is directly taken from the official reproduction package of DeepGD:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 
 # size: test budget

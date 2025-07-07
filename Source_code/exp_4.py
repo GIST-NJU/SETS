@@ -7,6 +7,10 @@ import pickle
 #This file demonstrates how to perform test selection on the predefined test sets.
 # Please save the selected subsets and
 # then pass it into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining.
+
+
+# This function is reused from the official replication package of DeepGD:
+# https://github.com/ZOE-CA/DeepGD
 def faults(sample,mis_ind_test,Clustering_labels):
   i=0
   pos=0

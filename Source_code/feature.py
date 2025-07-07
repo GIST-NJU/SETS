@@ -19,7 +19,7 @@ from tensorflow.keras.preprocessing.image import img_to_array, array_to_img
 # You need to adapt the code based on how the model and dataset are loaded
 # You can also refer to the original source of these functions in the official reproduction package of DeepGD.
 
-# This function comes from the official implementation in:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def vgg16_features_GD(arg):
 
@@ -76,9 +76,11 @@ def vgg16_features_GD(arg):
 
   return features, X_scf
 
-Your_google_drive_path = '/Users/miya_wang/Desktop/Papers/First_paper/supplement_data/Experiment_data'
+Your_google_drive_path = 'Input_data'
 data_path = Your_google_drive_path
-# This function comes from the official implementation in:
+
+
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def dataset(arg, model_name):
   CLIP_MIN = -0.5

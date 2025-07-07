@@ -3,7 +3,7 @@ import copy
 from SETS import GD,STD,gini_score,maxp_score,sets
 import pickle
 
-# This function is adapted from the implementation in:
+# This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
 def faults(sample,mis_ind_test,Clustering_labels):
   i=0
