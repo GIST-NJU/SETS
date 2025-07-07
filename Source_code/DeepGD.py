@@ -12,14 +12,9 @@ from pymoo.optimize import minimize
 import random
 import numpy as np
 
-# The core logic of DeepGD has been integrated into this Python file.
-# All functions below are directly sourced from the official DeepGD reproduction package.
-# To fully reproduce the experiments, you may also need to download:
-# - The pretrained models
-# - The datasets (e.g., CIFAR-10, Fruit-360)
-# - Additional scripts or dependencies listed in the official DeepGD repository
-# Please refer to the official DeepGD reproduction package for detailed instructions:
+# All functions and classes below are directly reused from the official DeepGD replication package:
 # https://github.com/ZOE-CA/DeepGD
+
 
 def find_knee_point(pareto_front):
     num_points = pareto_front.shape[0]
@@ -55,23 +50,27 @@ def GD(IDs, features):
 
 
 ID = 300
-n_gen =30
 size_ind = 100
+n_gen = 30
 p_size = 700
 n_off = 500
 m_rate = 0.7
+
+
 class MyProblem(ElementwiseProblem):
 
-    def __init__(self, n_var=size_ind):
-        super().__init__(n_var=n_var, n_obj=2, n_constr=0, xl=0, xu=len(x_test) - 1, type_var=list)
+    def __init__(self,Gini_scores,features_test,n_var=size_ind):
+        super().__init__(n_var=n_var, n_obj=2, n_constr=0, xl=0, xu=len(Gini_scores) - 1, type_var=list)
+        self.Gini_scores = Gini_scores
+        self.features_test = features_test
 
     def _evaluate(self, x, out, *args, **kwargs):
         global count
         # Opt version: Calculate the average Gini score
-        Ave_gini = np.mean([Gini_scores[c] for c in x])
+        Ave_gini = np.mean([self.Gini_scores[c] for c in x])
 
         # print(type(x))
-        div_score = GD(x, features_test)
+        div_score = GD(x, self.features_test)
         fit1 = Ave_gini
         fit2 = abs(div_score)
 
@@ -79,28 +78,33 @@ class MyProblem(ElementwiseProblem):
 
 
 class MySampling(Sampling):
+    def __init__(self, index_withoutnoisy):
+        super().__init__()
+        self.index_withoutnoisy = index_withoutnoisy
 
     def _do(self, problem, n_samples, **kwargs):
         X = np.full((n_samples, problem.n_var), None, dtype=object)
         #print(len(index_withoutnoisy))
 
         for i in range(n_samples):
-            X[i] = np.asarray(random.sample(list(index_withoutnoisy), problem.n_var))
+            X[i] = np.asarray(random.sample(list(self.index_withoutnoisy), problem.n_var))
         return X
 
 
 # original
 class MyCrossover(Crossover):
-    def __init__(self):
+    def __init__(self,Gini_scores,index_withoutnoisy):
         # define the crossover: number of parents and number of offsprings
         super().__init__(2, 2)
+        self.Gini_scores = Gini_scores
+        self.index_withoutnoisy = index_withoutnoisy
 
     def _do(self, problem, X, **kwargs):
         # The input of has the following shape (n_parents, n_matings, n_var)
         _, n_matings, n_var = X.shape
 
         def pri(xx):
-            gini_X = [Gini_scores[i] for i in xx]
+            gini_X = [self.Gini_scores[i] for i in xx]
             zipped_lists = zip(gini_X, xx)
             # sort from the highest gini score to the lowest
             sorted_zipped_lists = sorted(zipped_lists, reverse=True)
@@ -126,12 +130,12 @@ class MyCrossover(Crossover):
             # join the character list and set the output
             if len(set(off1)) < n_var:
                 Rsize = n_var - len(set(off1))
-                off1_replace = random.sample(list(set(index_withoutnoisy) - set(off1)), Rsize)
+                off1_replace = random.sample(list(set(self.index_withoutnoisy) - set(off1)), Rsize)
                 off1 = list(set(off1))
                 off1.extend(set(off1_replace))
             if len(set(off2)) < n_var:
                 Rsize = n_var - len(set(off2))
-                off2_replace = random.sample(list(set(index_withoutnoisy) - set(off2)), Rsize)
+                off2_replace = random.sample(list(set(self.index_withoutnoisy) - set(off2)), Rsize)
                 off2 = list(set(off2))
                 off2.extend(set(off2_replace))
 
@@ -140,13 +144,16 @@ class MyCrossover(Crossover):
 
 
 class MyMutation(Mutation):
-    def __init__(self):
+    def __init__(self,Gini_scores,features_test,index_withoutnoisy):
         super().__init__()
+        self.Gini_scores = Gini_scores
+        self.features_test =features_test
+        self.index_withoutnoisy = index_withoutnoisy
 
     def _do(self, problem, X, **kwargs):
 
         def pri(xx):
-            gini_X = [Gini_scores[i] for i in xx]
+            gini_X = [self.Gini_scores[i] for i in xx]
             zipped_lists = zip(gini_X, xx)
             # sort from the highest gini score to the lowest
             sorted_zipped_lists = sorted(zipped_lists, reverse=True)
@@ -164,11 +171,11 @@ class MyMutation(Mutation):
             if random_value <= mutation_rate:
                 while ff < len(X[i]):
                     b = xx[:ff] + xx[ff + 1:]
-                    ss = GD(b, features_test)
+                    ss = GD(b, self.features_test)
                     gd_scores_mut.append(ss)
                     ff = ff + 1
                 xx[len(X[i]) - N_least + gd_scores_mut.index(max(gd_scores_mut))] = random.choice(
-                    list(set(index_withoutnoisy) - set(X[i])))
+                    list(set(self.index_withoutnoisy) - set(X[i])))
                 mut[i] = np.array(xx)
             else:
                 mut[i] = X[i]
@@ -181,24 +188,27 @@ class MyDuplicateElimination(ElementwiseDuplicateElimination):
     def is_equal(self, a, b):
         return np.array_equal(a.X, b.X)
 
-size =100
-problem = MyProblem(n_var=size)
 
-algorithm = NSGA2(pop_size=p_size,
-                n_offsprings=n_off,
-                sampling=MySampling(),
-                crossover=MyCrossover(),
-                mutation=MyMutation(),
-                eliminate_duplicates=MyDuplicateElimination())
+def deepgd(size,index_withoutnoisy,gini_scores,features_test):
+    problem = MyProblem(n_var=size,Gini_scores=gini_scores,features_test=features_test)
 
-start_time = time.time()
-res = minimize(problem,
-               algorithm,
-               ('n_gen', n_gen),
-               verbose=False)
-F = res.F
-X = res.X
-knee_point, indd = find_knee_point(F)
-end_time = time.time()
-execution_time = end_time-start_time
+    algorithm = NSGA2(pop_size=p_size,
+                    n_offsprings=n_off,
+                    sampling=MySampling(index_withoutnoisy),
+                    crossover=MyCrossover(gini_scores,index_withoutnoisy),
+                    mutation=MyMutation(gini_scores,features_test,index_withoutnoisy),
+                    eliminate_duplicates=MyDuplicateElimination())
+
+    start_time = time.time()
+    res = minimize(problem,
+                   algorithm,
+                   ('n_gen', n_gen),
+                   verbose=False)
+    F = res.F
+    X = res.X
+    knee_point, indd = find_knee_point(F)
+    end_time = time.time()
+    execution_time = end_time-start_time
+
+    return X[indd], execution_time
 
