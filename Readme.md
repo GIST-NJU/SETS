@@ -43,8 +43,8 @@ The input parameters include:
 
 * `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
-* `features`: features of all the test inputs (numpy)
-* `output_probability`: output probabilities of all the test inputs (numpy)
+* `features`: features of all the test inputs (numpy.ndarray)
+* `output_probability`: output probabilities of all the test inputs (numpy.ndarray)
 * `uncertainty`: metric for uncertainty evalution, "maxp" or "gini" (str)
 * `diversity`: metric for diversity evluation, "gd" or "std" (str)
 * `a`: the reduction coefficient, 3 by default (int)
@@ -89,8 +89,8 @@ The input parameters include:
 
 * `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
-* `gini_scores`: DeepGini uncertainty values of all the test inputs (numpy)
-* `features`: features of all the test inputs (numpy)
+* `gini_scores`: DeepGini uncertainty values of all the test inputs (numpy.ndarray)
+* `features`: features of all the test inputs (numpy.ndarray)
 
 The output will be a list of indexes of the selected test inputs and the execution time.
 
