@@ -131,9 +131,8 @@ In order to generate the files in `/Fault_clusters`, use the following data proc
 
 After obtaining all the required input data in `Input_data` (either by using the pre-generated data directly, or running data processing scripts to generate such data), run the following command to perform the experiments of each research question:
 
-- **RQ1 (Configuration)**:
-  
-run `python exp_1.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will run SETS with different combiantions of uncertainty and diversity metrics and SETS with different values of the reduction coefficient on all subjects.
+- **RQ1 (Configuration)**:  
+  run `python exp_1.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will run SETS with different combiantions of uncertainty and diversity metrics and SETS with different values of the reduction coefficient on all subjects.
 - **RQ2&3 (Efficiency and Effectiveness)**:
   1. run `python exp_2_3_sets.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will apply the SETS approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
   2. run `python exp_2_3_deepgd.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will apply the DeepGD approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
