@@ -32,24 +32,24 @@ pip install -r requirements.txt
 
 ## SETS
 
-The `Source_code\SETS.py`file contains the implementation of  the **SETS** approach.
+The `Source_code\SETS.py`file contains the implementation of the **SETS** approach.
 Run the following function to perform test selection for a given test selection problem:
 
 ```python
-def sets(size, index, features,output_probability,uncertainty,diversity,a)
+def sets(size, index, features, output_probability, uncertainty, diversity, a)
 ```
 
 The input parameters include:
 
-* `size`: test budget (int)
+* `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
-* `features`: features of all the test inputs (numpy)
-* `output_probability`: the output probabilities of all the test inputs (numpy)
-* `uncertainty`: "maxp" or "gini" (str)
-* `diversity`: "gd" or "std" (str)
-* `a`: the reduction coefficient (int)
+* `features`: features of all the test inputs (numpy.ndarray)
+* `output_probability`: output probabilities of all the test inputs (numpy.ndarray)
+* `uncertainty`: metric for uncertainty evalution, "maxp" or "gini" (str)
+* `diversity`: metric for diversity evluation, "gd" or "std" (str)
+* `a`: the reduction coefficient, 3 by default (int)
 
-The output will be  a list of indexes of the selected test inputs and the execution time.
+The output will be a list of indexes of the selected test inputs and the execution time.
 
 ## Reproducing Experiments
 
@@ -78,21 +78,21 @@ We provide all the pretrained DNN models in the `Pretrained_model` folder. You c
 
 #### DeepGD
 
-The official replication package is available at [DeepGD](https://github.com/ZOE-CA/DeepGD/tree/main)
-Since the DeepGD approach in its original replication package is implemented in Jupyter Notebook (`.ipynb`), we have encapsulated it into a function-based interface for easier experiment reproduction. The `Source_code/DeepGD.py` file provides the implementation of the DeepGD approach.
+The official replication package of is available at [DeepGD](https://github.com/ZOE-CA/DeepGD/tree/main).
+Since the DeepGD approach in its original replication package is implemented in Jupyter Notebook (`.ipynb`), we have encapsulated it into the `Source_code/DeepGD.py` file. Note that the DeepGD approach involves randomness and may produce slightly different results in different runs.
 Run the following function to perform test selection for a given test selection problem:
 
 ```python
-def deepgd(size,index,gini_scores,features)
+def deepgd(size, index, gini_scores, features)
 ```
 The input parameters include:
 
-* `size`: test budget (int)
+* `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
-* `gini_scores`: the uncertainty values of all the test inputs (numpy)
-* `features`: features of all the test inputs (numpy)
+* `gini_scores`: DeepGini uncertainty values of all the test inputs (numpy.ndarray)
+* `features`: features of all the test inputs (numpy.ndarray)
 
-The output will be  a list of indexes of the selected test inputs and the execution time.
+The output will be a list of indexes of the selected test inputs and the execution time.
 
 #### Random Selection (RS)
 
@@ -104,24 +104,28 @@ def rs(size, index)
 ```
 The input parameters include:
 
-* `size`: test budget (int)
+* `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
 
-The output will be  a list of indexes of the selected test inputs.
+The output will be a list of indexes of the selected test inputs.
 
 
-### 3) Input Data
+### 3) Input Data Required
 
-The `Input_data` directory contains pre-processed files for running test selection approaches, and reproducing the experiments. It includes the following content for each experimental subject:
+The `Input_data` directory contains pre-processed files for running test selection approaches, and reproducing the experiments. It includes:
 
-* `/Pretrained_model` : this folder contains all the pretrained DNN models.
-* `/Fault_clusters`: contains pre-processed data for each subject, including cluster labels (`cluster_results.npy`), test input features (`features_test.npy`), output probabilities of all test inputs (`output_probability.npy`) and mispredicted test input indexes (`mis_index_test.npy`). These will be used as the input for running the test selection approach and evaluate the results.
-* `/Retrain`: this folder contains a test set \(T\) and a validation set \(V\) for each dataset  used for evaluating DNN retraining performance (RQ4).
+* `/Pretrained_model`: this folder contains all the pretrained DNN models.
+* `/Fault_clusters`: this folder contains contains pre-processed data for each subject, which will be used as the input for running the test selection approach and evaluate the results:
+  *  `features_test.npy`: features of all the test inputs,
+  *  `output_probability.npy`: output probabilities of all the test inputs,
+  *   cluster_results.npy`: clustering label of each test input (for computing the Fault Detection Rate),
+  *  `mis_index_test.npy`:  indexes of misclassified test inputs (for computing the Fault Detection Rate).
+* `/Retrain`: this folder contains a test set \(T\) and a validation set \(V\) for each dataset used for evaluating DNN retraining performance (RQ4).
 
-In order to generate the above all files from the subjects, use the following data processing scripts:
+In order to generate the files in `/Fault_clusters`, use the following data processing scripts:
 
-* Run `python cluster.py`  to generate `cluster_results.npy` and `mis_index_test.npy` files  (the clustering algorithm comes from [Black-Box Testing of Deep Neural Networks through Test Case Diversity](https://github.com/zohreh-aaa/DNN-Testing), by the same authors as DeepGD). The `cluster_results.npy` file contains the clustering labels for each test input and the `mis_index_test.npy` file contains the indexes of misclassified test inputs. These labels are subsequently used in the computation of the Fault Detection Rate (FDR). Note that the DBSCAN clustering algorithm involves randomness and may produce slightly different results in different runs. Therefore, we provide the clustering results used in our experiments for all subjects in the `Input_data/Fault_clusters` folder.
-* Run `python feature.py` to load the dataset and model, perform predictions to obtain the output probabilities (the prediction time can be recorded), and extract features using a VGG16 model. Finally, `features_test.npy` and `output_probability.npy` files will be generated.
+* Run `python feature.py` to generate `features_test.npy` and `output_probability.npy` files. This involves loading the dataset and model, performing predictions to obtain the output probabilities (the prediction time is recorded at the same time), and extracting features using a VGG16 model.
+* Run `python cluster.py` to generate `cluster_results.npy` and `mis_index_test.npy` files. Note that the [DBSCAN clustering algorithm](https://github.com/zohreh-aaa/DNN-Testing) involves randomness and may produce slightly different results in different runs.
 
 ### 4) Experiment Execution
 
@@ -129,16 +133,16 @@ After obtaining all the required input data in `Input_data` (either by using the
 
 - **RQ1 (Configuration)**: run `python exp_1.py` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will run SETS with different combiantions of uncertainty and diversity metrics and SETS with different values of the reduction coefficient on all subjects.
 - **RQ2&3 (Efficiency and Effectiveness)**:
-  (1) run `python exp_2_3_sets.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the SETS approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
-  (2) run `python exp_2_3_deepgd.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the DeepGD approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
-  (3) run `python exp_3_rs.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the RS approach to perform test selection on all subjects and you will get the selected subsets (for one run).
+  1. run `python exp_2_3_sets.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the SETS approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
+  2. run `python exp_2_3_deepgd.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the DeepGD approach to perform test selection on all subjects and you will get the selected subsets and the execution time (for one run).
+  3. run `python exp_3_rs.py ` (You need to change the `data_path` variable to the actual path where your `Fault_clusters` folder is located before you run). This will apply the RS approach to perform test selection on all subjects and you will get the selected subsets (for one run).
 - **RQ4 (DNN Enhancement)**: run `python exp_4.py ` (You need to change the `data_path` variable to the actual path where your `Input_data`  folder is located before you run). You will get the subsets selected by SETS and DeepGD on the test set T (for one run) and you need to pass them into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining. The accuracy of the retrained model will then be evaluated.
 
 ### 5) Experiment Results
 
 The `Experiment_results` folder provides all raw experimental results reported in the paper:
 
-- **RQ1 (Configuration):** We provide the Fault Detection Rate (FDR) of SETS with different metric combinations in the `Metric_combination` folder and the FDR and time cost of SETS with different reduction_coefficient in the `reduction_coefficient` folder (Results of 10 repeated runs).
-- **RQ2&3 (Efficiency and Effectiveness):** We provide the FDR and execution time of SETS and baseline approaches in the folders with the corresponding names (Results of 30 repeated runs).
-- **RQ4 (DNN Enhancement):** We provide the retraining results of SETS and DeepGD in the `Retrain_results` folder, as well as the selected subsets in the folders with the corresponding names (Results of 5 repeated runs).
+- **RQ1 (Configuration):** We provide the Fault Detection Rate (FDR) of SETS with different metric combinations in the `Metric_combination` folder and the FDR and time cost of SETS with different reduction coefficients in the `reduction_coefficient` folder (Results of 10 repeated runs).
+- **RQ2&3 (Efficiency and Effectiveness):** We provide the FDR and execution time of SETS and baseline approaches in their respective folders (Results of 30 repeated runs).
+- **RQ4 (DNN Enhancement):** We provide the retraining results of SETS and DeepGD in the `Retrain_results` folder, as well as the selected subsets in their respective folders (Results of 5 repeated runs).
 
