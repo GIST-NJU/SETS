@@ -41,13 +41,13 @@ def sets(size, index, features, output_probability, uncertainty, diversity, a)
 
 The input parameters include:
 
-* `size`: test budget, i.e., number of test inputs that will be selected (int)
-* `index`: indexes of all the test inputs (list)
-* `features`: features of all the test inputs (numpy.ndarray)
-* `output_probability`: output probabilities of all the test inputs (numpy.ndarray)
-* `uncertainty`: metric for uncertainty evalution, "maxp" or "gini" (str)
-* `diversity`: metric for diversity evluation, "gd" or "std" (str)
-* `a`: the reduction coefficient, 3 by default (int)
+* `size`: test budget, i.e., number of test inputs that will be selected (*int*)
+* `index`: indexes of all the test inputs (*list*)
+* `features`: features of all the test inputs (*numpy.ndarray*)
+* `output_probability`: output probabilities of all the test inputs (*numpy.ndarray*)
+* `uncertainty`: metric for uncertainty evaluation, "maxp" or "gini" (*str*)
+* `diversity`: metric for diversity evaluation, "gd" or "std" (*str*)
+* `a`: the reduction coefficient, 3 by default (*int*)
 
 The output will be a list of indexes of the selected test inputs and the execution time.
 
@@ -87,10 +87,10 @@ def deepgd(size, index, gini_scores, features)
 ```
 The input parameters include:
 
-* `size`: test budget, i.e., number of test inputs that will be selected (int)
-* `index`: indexes of all the test inputs (list)
-* `gini_scores`: DeepGini uncertainty values of all the test inputs (numpy.ndarray)
-* `features`: features of all the test inputs (numpy.ndarray)
+* `size`: test budget, i.e., number of test inputs that will be selected (*int*)
+* `index`: indexes of all the test inputs (*list*)
+* `gini_scores`: DeepGini uncertainty values of all the test inputs (*numpy.ndarray*)
+* `features`: features of all the test inputs (*numpy.ndarray*)
 
 The output will be a list of indexes of the selected test inputs and the execution time.
 
@@ -131,14 +131,11 @@ In order to generate the files in `/Fault_clusters`, use the following data proc
 
 After obtaining all the required input data in `Input_data` (either by using the pre-generated data directly, or running data processing scripts to generate such data), run the following command to perform the experiments of each research question:
 
-- **RQ1 (Configuration)**:  
-  1. run `python exp_1.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will run SETS with different combinations of uncertainty and diversity metrics and SETS with different values of the reduction coefficient on all subjects. You will get the corresponding FDR and execution time for one run.
-- **RQ2&3 (Efficiency and Effectiveness)**:
-  1. run `python exp_2_3_sets.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will apply the SETS approach to perform test selection on all subjects. You will get the FDR (calculated by the selected subsets) and the execution time for one run.
-  2. run `python exp_2_3_deepgd.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will apply the DeepGD approach to perform test selection on all subjects. You will get the FDR (calculated by the selected subsets) and the execution time for one run.
-  3. run `python exp_3_rs.py [data_path]` (the `data_path` variable is the actual path where your `Fault_clusters` folder is located). This will apply the RS approach to perform test selection on all subjects. You will get the FDR (calculated by the selected subsets) for one run.
-- **RQ4 (DNN Enhancement)**:  
-  1. run `python exp_4.py [data_path]` (the `data_path` variable is the actual path where your `Input_data` folder is located). You will get the subsets selected by SETS and DeepGD on the test set T (for one run) and you need to pass them into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining. The accuracy of the retrained model will then be evaluated.
+- **RQ1 (Configuration)**: run `python exp_1.py [data_path]`. This will run SETS with different combinations of uncertainty and diversity metrics, and with different values of the reduction coefficient on all subjects. 
+- **RQ2&3 (Efficiency and Effectiveness)**: run `python exp_2_3_sets.py [data_path]`, `python exp_2_3_deepgd.py [data_path]`, and `python exp_3_rs.py [data_path]`, which will apply the SETS, DeepGD, and RS approach to perform test selection on all subjects, respectively.
+- **RQ4 (DNN Enhancement)**: run `python exp_4.py [data_path]`. You will get the subsets selected by SETS and DeepGD on the test set T and you need to pass them into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining. The accuracy of the retrained model will then be evaluated.
+
+In the above commands, `[data_path]` is the actual path where your `Fault_clusters` folder is located.
 
 ### 5) Experiment Results
 
