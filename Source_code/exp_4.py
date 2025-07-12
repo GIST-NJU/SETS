@@ -55,11 +55,13 @@ data_model_pairs = [
     ("TinyImageNet", "ResNet101")
 ]
 
-if len(sys.argv) < 2:
-    print("Usage: python exp_4.py <data_path>")
+if len(sys.argv) < 4:
+    print("Usage: python exp_4.py <n> <data_path> <output_path>")
     sys.exit(1)
 
-data_path = sys.argv[1]
+n = sys.argv[1] # repeat times
+data_path = sys.argv[2] # the path you locate the Fault_clusters folder
+output_path = sys.argv[3] # the path you want to save the result file
 
 
 for data_name, model_name in data_model_pairs:
@@ -96,11 +98,30 @@ for data_name, model_name in data_model_pairs:
     gini_scores = gini_score(output_probability)
 
     size = 500
-    selected_subset, exe_time = sets(size, intersection, features_test, output_probability, "maxp", "gd",a=3)
-    print("SETS:",selected_subset)
 
-    selected_subset, exe_time = deepgd(size, index_withoutnoisy, gini_scores, features_test)
-    print("DeepGD:", selected_subset)
+    #SETS
+    selected_subset, exe_time = sets(size, intersection, features_test, output_probability, "maxp", "gd",a=3)
+    filename = f"{output_path}/sets_{data_name}_{model_name}_{size}.pkl"
+    with open(filename, 'wb') as f:
+        pickle.dump(selected_subset, f)
+    print(f"Saved file: {filename}")
+
+    #DeepGD
+    fdr_list = []
+    subset_list = []
+    for i in range(len(n)):
+        selected_subset, exe_time = deepgd(size, index_withoutnoisy, gini_scores, features_test)
+        _, find_faults, _ = faults(selected_subset, mis_ids_test, Clustering_labels)
+        fdr = find_faults / min(size, total_faults)
+        fdr_list.append(fdr)
+        subset_list.append(selected_subset)
+    filename = f"{output_path}/deepgd_{data_name}_{model_name}_{size}.txt"
+    with open(filename, 'w') as file:
+        file.write("FDR List:\n")
+        file.write("\n".join(map(str, fdr_list)) + "\n")  # Write fdr_list
+        file.write("Subset List:\n")
+        file.write("\n".join(map(str, subset_list)) + "\n")  # Write subset_list
+    print(f"Saved file: {filename}")
 
 
 
