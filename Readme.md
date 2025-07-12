@@ -107,7 +107,7 @@ The input parameters include:
 * `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
 
-The output will be a list of indexes of the selected test inputs.
+The output will be a list of indexes of the selected test inputs and the execution time.
 
 
 ### 3) Input Data Required
