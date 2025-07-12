@@ -107,7 +107,7 @@ The input parameters include:
 * `size`: test budget, i.e., number of test inputs that will be selected (int)
 * `index`: indexes of all the test inputs (list)
 
-The output will be a list of indexes of the selected test inputs.
+The output will be a list of indexes of the selected test inputs and the execution time.
 
 
 ### 3) Input Data Required
@@ -132,7 +132,15 @@ In order to generate the files in `/Fault_clusters`, use the following data proc
 After obtaining all the required input data in `Input_data` (either by using the pre-generated data directly, or running data processing scripts to generate such data), run the following command to perform the experiments of each research question:
 
 - **RQ1 (Configuration)**: run `python exp_1.py [data_path]`. This will run SETS with different combinations of uncertainty and diversity metrics, and with different values of the reduction coefficient on all subjects. 
-- **RQ2&3 (Efficiency and Effectiveness)**: run `python exp_2_3_sets.py [data_path]`, `python exp_2_3_deepgd.py [data_path]`, and `python exp_3_rs.py [data_path]`, which will apply the SETS, DeepGD, and RS approach to perform test selection on all subjects, respectively.
+- **RQ2&3 (Efficiency and Effectiveness)**:  
+  Run `python exp_2_3.py [approach] [n] [data_path] [output_path]` to apply a specific approach to perform test selection on all subjects.  
+  - `[approach]`: The test selection method to use. Available options are `sets`, `deepgd`, and `rs`.  
+  - `[n]`: The number of times to repeat the experiment (e.g., 30).  
+  - `[data_path]`: The path to the `Fault_clusters` folder.  
+  - `[output_path]`: The path to save the result files.  
+
+  You will get result files that are consistent with those in the `Experiment_results` folder.
+
 - **RQ4 (DNN Enhancement)**: run `python exp_4.py [data_path]`. You will get the subsets selected by SETS and DeepGD on the test set T and you need to pass them into the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`) for model retraining. The accuracy of the retrained model will then be evaluated.
 
 In the above commands, `[data_path]` is the actual path where your `Fault_clusters` folder is located.
