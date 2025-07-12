@@ -111,7 +111,7 @@ for data_name, model_name in data_model_pairs:
                 print("FDR:", fdr)
                 print("selection time:", exe_time)
 
-            filename = f"{output_path}_{approach}_{data_name}_{model_name}_{size}.txt"
+            filename = f"{output_path}/{approach}_{data_name}_{model_name}_{size}.txt"
             with open(filename, 'w') as file:
                file.write("Fault List:\n")
                file.write("\n".join(map(str, fault_list)) + "\n")  # Write fault_list
@@ -146,7 +146,7 @@ for data_name, model_name in data_model_pairs:
                 print("FDR:", fdr)
                 print("selection time:", exe_time)
 
-            filename = f"{output_path}_{approach}_{data_name}_{model_name}_{size}.txt"
+            filename = f"{output_path}/{approach}_{data_name}_{model_name}_{size}.txt"
             with open(filename, 'w') as file:
                 file.write("Fault List:\n")
                 file.write("\n".join(map(str, fault_list)) + "\n")  # Write fault_list
@@ -178,7 +178,7 @@ for data_name, model_name in data_model_pairs:
                 print("FDR:", fdr)
                 print("selection time:", exe_time)
 
-            filename = f"{output_path}_{approach}_{data_name}_{model_name}_{size}.txt"
+            filename = f"{output_path}/{approach}_{data_name}_{model_name}_{size}.txt"
             with open(filename, 'w') as file:
                 file.write("Fault List:\n")
                 file.write("\n".join(map(str, fault_list)) + "\n")  # Write fault_list

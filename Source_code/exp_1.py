@@ -56,14 +56,15 @@ metric_combinations = [
     ("gini","std")
 ]
 
-
-if len(sys.argv) < 2:
-    print("Usage: python exp_1.py <data_path>")
+if len(sys.argv) < 4:
+    print("Usage: python exp_1.py <n> <data_path> <output_path>")
     sys.exit(1)
 
-data_path = sys.argv[1]
+n = sys.argv[1] # repeat times
+data_path = sys.argv[2] # the path you locate the Fault_clusters folder
+output_path = sys.argv[3] # the path you want to save the result file
 
-# for metric combination
+
 for data_name, model_name in data_model_pairs:
     print(f"Dataset: {data_name}, Model: {model_name}")
     if data_name == "TinyImageNet":
@@ -93,51 +94,41 @@ for data_name, model_name in data_model_pairs:
     index_withoutnoisy = set(sett) - set(noisy_index)
 
 
-
-    for size in [100,300,500]:
-        for uncertainty,diversity in metric_combinations:
-            selected_subset,_ = sets(size, index_withoutnoisy, features_test, output_probability, uncertainty, diversity, a=3)
-            _, find_faults, _ = faults(selected_subset,mis_ids_test,Clustering_labels)
-            fdr = find_faults / min(size, total_faults)
-            print("FDR:",uncertainty, diversity, fdr)
-
-
-# for different a
-for data_name, model_name in data_model_pairs:
-    print(f"Dataset: {data_name}, Model: {model_name}")
-    if data_name == "TinyImageNet":
-        with open(f'{data_path}/{data_name}_{model_name}/cluster_results.pkl', 'rb') as f:
-            Clustering_labels = pickle.load(f)
-        with open(f'{data_path}/{data_name}_{model_name}/mis_index_test.pkl', 'rb') as f:
-            val_mis_data = pickle.load(f)
-        mis_ids_test = [item[2] for item in val_mis_data]
-    else:
-        Clustering_labels = np.load(f'{data_path}/{data_name}_{model_name}/cluster_results.npy')
-        mis_ids_test = np.load(f'{data_path}/{data_name}_{model_name}/mis_index_test.npy')
-
-    output_probability = np.load(f'{data_path}/{data_name}_{model_name}/output_probability.npy')
-    features_test = np.load(f'{data_path}/{data_name}_{model_name}/features_test.npy')
-
-    if data_name == "Fruit360":
-        mis_ids_test = mis_ids_test[0]
-
-
-    total_faults = len(set(Clustering_labels)) - 1
-
-    noisy_index = []
-    for i in range(len(mis_ids_test)):
-        if Clustering_labels[i] == -1:
-            noisy_index.append(mis_ids_test[i])
-    sett = list(range(0, len(output_probability)))
-    index_withoutnoisy = set(sett) - set(noisy_index)
-
-
-
+    # for metric combination
     for size in [100,300,500]:
         print(size)
+        for uncertainty,diversity in metric_combinations:
+            print(uncertainty, diversity)
+            for i in range(int(n)):
+                selected_subset,_ = sets(size, index_withoutnoisy, features_test, output_probability, uncertainty, diversity, a=3)
+                _, find_faults, _ = faults(selected_subset,mis_ids_test,Clustering_labels)
+                fdr = find_faults / min(size, total_faults)
+                print("FDR:", fdr)
+                print("Faults:",find_faults)
+
+
+    # for different a
+    for size in [100,300,500]:
+        print(size)
+
+        fdr_list = [] # record the result
         for a in range(2, 11):
-            selected_subset, exe_time = sets(size, index_withoutnoisy, features_test, output_probability, "maxp", "gd", a)
-            _, find_faults, _ = faults(selected_subset,mis_ids_test,Clustering_labels)
-            fdr = find_faults / min(size, total_faults)
-            print("FDR:", fdr)
-            print("time:",exe_time)
+            time_list = []
+            for i in range(int(n)):
+                selected_subset, exe_time = sets(size, index_withoutnoisy, features_test, output_probability, "maxp", "gd", a)
+                _, find_faults, _ = faults(selected_subset,mis_ids_test,Clustering_labels)
+                fdr = find_faults / min(size, total_faults)
+                time_list.append(exe_time)
+            fdr_list.append(fdr)
+
+            filename = f"{output_path}/{data_name}_{model_name}_{size}_{a}.txt"
+            with open(filename, 'w') as file:
+                file.write("Time List:\n")
+                file.write("\n".join(map(str, time_list)) + "\n")  # Write time_list
+            print(f"Saved file: {filename}")
+
+        filename = f"{output_path}/{data_name}_{model_name}_{size}.txt"
+        with open(filename, 'w') as file:
+            file.write("FDR List:\n")
+            file.write("\n".join(map(str, fdr_list)) + "\n")  # Write time_list
+        print(f"Saved file: {filename}")
