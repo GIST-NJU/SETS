@@ -69,7 +69,7 @@ def sets(size, index, features,output_probability,uncertainty,diversity,a):
 
     sorted_indices = sorted(index, key=lambda i: un_scores[i], reverse=True)
 
-    top_percent_count = max(1, int(a * size))
+    top_percent_count = max(1, int(a * size)) # reduction
     if a * size > len(index):
         top_percent_count = len(index)
     filtered_indices = sorted_indices[:top_percent_count]
@@ -93,10 +93,10 @@ def sets(size, index, features,output_probability,uncertainty,diversity,a):
             elif diversity == "std":
                 new_gd = STD(S + [i], features)
             gd_datas.append(new_gd)
-            gd_delta = new_gd - current_gd
+            gd_delta = new_gd - current_gd  #the diversity contribution
             gd_deltas.append(gd_delta)
 
-        min_gd = min(gd_deltas)
+        min_gd = min(gd_deltas) #min_max normalization
         max_gd = max(gd_deltas)
         if max_gd - min_gd > 0:
             normalized_gd_deltas = [(gd - min_gd) / (max_gd - min_gd + 0.5) for gd in gd_deltas]
