@@ -151,7 +151,7 @@ After obtaining all the required input data in `Input_data` (either by using the
   - `[output_path]`: The path to save the selected subsets.
 Then, run the corresponding retraining scripts (`retrain_four.py`, `retrain_fruit.py`, and `retrain_tiny.py`), which will read the selected subsets you saved in the `output_path` as input for model retraining. The accuracy of the retrained model will then be evaluated.
 
-You will get results that are consistent with those in the `Experiment_results` folder after running the commands. Since the execution time involves randomness, the results of execution time may vary slightly between runs.
+You will get results that are consistent with those in the `Experiment_results` folder after running the commands.
 
 ### 5) Experiment Results
 
