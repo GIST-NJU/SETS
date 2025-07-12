@@ -2,6 +2,7 @@ import numpy as np
 import copy
 from SETS import GD,STD,gini_score,maxp_score,sets
 import pickle
+import sys
 
 # This function is reused from the official replication package of DeepGD:
 # https://github.com/ZOE-CA/DeepGD
@@ -55,7 +56,12 @@ metric_combinations = [
     ("gini","std")
 ]
 
-data_path = '' #you have to change the path
+
+if len(sys.argv) < 2:
+    print("Usage: python exp_1.py <data_path>")
+    sys.exit(1)
+
+data_path = sys.argv[1]
 
 # for metric combination
 for data_name, model_name in data_model_pairs:

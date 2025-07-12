@@ -2,6 +2,7 @@ import numpy as np
 import copy
 from DeepGD import deepgd,gini_score
 import pickle
+import sys
 
 # This function is adapted from the implementation in:
 # https://github.com/ZOE-CA/DeepGD
@@ -47,7 +48,11 @@ data_model_pairs = [
     ("TinyImageNet", "ResNet101")
 ]
 
-data_path = 'Input_data/Fault_clusters' #you have to change the path
+if len(sys.argv) < 2:
+    print("Usage: python exp_2_3_deepgd.py <data_path>")
+    sys.exit(1)
+
+data_path = sys.argv[1]
 
 
 for data_name, model_name in data_model_pairs:
